@@ -6,11 +6,13 @@ Player features inspired from: https://towardsdatascience.com/how-to-build-an-mp
 
 import pygame #used to create video games
 import tkinter as tk #used to develop GUI
-from tkinter.filedialog import askdirectory #it permit to select dir
+import tkinter.filedialog as tkfile
+import fontawesome as fa
 import os #it permits to interact with the operating system
+from AudioBookPlayer import Player
 
-pygame.init()
-pygame.mixer.init()
+BG_COLOR='gray12'
+FG_COLOR='wheat3'
 
 class Application(tk.Frame):
     def __init__(self, master=None):
@@ -19,8 +21,10 @@ class Application(tk.Frame):
         self.pack()
         self.master.title('Andi\'s Audio Book Player') 
         self.master.geometry('450x350')
+        self.master['bg'] = BG_COLOR
         self.create_menubar()
-        self.create_widgets()
+        self.create_title()
+        # self.create_widgets()
 
     def create_menubar(self):
         menubar = tk.Menu(self)
@@ -28,19 +32,43 @@ class Application(tk.Frame):
         menubar.add_command(label="Close", command=self.Close)  
         self.master.config(menu=menubar)
 
-    def create_widgets(self):
-        pass
-        self.title = self.titleLabel = tk.Label(self.master, text = 'Audiobook Player', bg='black', fg='red')
+    def create_title(self):
+        self.titleLabel = tk.Label(self.master, text = 'Audiobook Player',fg=FG_COLOR, bg=BG_COLOR, font=("Consolas", 22))
         self.titleLabel.pack(side='top', fill='x', expand=1)
 
+    def create_widgets(self, player):
+        nameLabel = tk.Label(self.master, text = 'Playing: ' + player.currName, fg=FG_COLOR, bg=BG_COLOR, font=("Consolas", 14))
+        nameLabel.pack(side='top', fill='x', expand=1)
+        PlayButton = tk.Button(self.master, text='Play', command=player.Play, fg='wheat1', bg='black', font=("Consolas", 14))
+        PlayButton.pack(side='top', fill='x', expand=1)
+        PauseButton = tk.Button(self.master, text='Pause', command=player.Pause, fg='wheat1', bg='black', font=("Consolas", 14))
+        PauseButton.pack(side='top', fill='x', expand=1)
+
     def SelectFiles(self):
-        print("Do Do...")
+        # currently not used option to select a whole directory
+        # directory = tk.filedialog.askdirectory()
+        # os.chdir(directory)
+        # song_list = os.listdir()
+        song =  tk.filedialog.askopenfilename(title='Select Audio File...')
+        song_list = []
+        if len(song) > 0:
+            song_list = [song] # only handle single files for now
+        print(song_list)
+        if len(song_list) > 0:
+            self.bookPlayer = Player(song_list)
+            self.create_widgets(self.bookPlayer)
 
     def Close(self):
         print("Done...")
+        try:
+            if self.bookPlayer is not None:
+                self.bookPlayer.Pause()
+        except AttributeError:
+            pass # closing without player initialized 
         self.master.destroy()
 
 if __name__ == "__main__":
     root = tk.Tk()
     app = Application(master=root)
+    root.protocol("WM_DELETE_WINDOW", app.Close)
     app.mainloop()
