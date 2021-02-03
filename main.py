@@ -74,13 +74,17 @@ class Application(tk.Frame):
         self.master.destroy()
 
     def on_press(self, key):
-        if str(key.value) == '<179>':
+        try:
+            val = str(key.value)
+        except AttributeError:
+            val = str(key)
+        if val == '<179>':
             # play pause media key was pressed
             self.bookPlayer.PausePlay()
-        if str(key.value) == '<176>':
+        if val == '<176>':
             # next key was pressed
             self.bookPlayer.StepForward()
-        if str(key.value) == '<177>':
+        if val == '<177>':
             # previous key was pressed
             self.bookPlayer.StepBack()
 
