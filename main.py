@@ -11,9 +11,18 @@ import fontawesome as fa
 import os #it permits to interact with the operating system
 from pynput.keyboard import Listener
 from AudioBookPlayer import Player
+import threading
+import time
 
 BG_COLOR='gray12'
 FG_COLOR='wheat3'
+
+def Sec2HMinSec(timeSec: float):
+    H = int((timeSec // 60) // 60)
+    m = int(timeSec // 60 - 60 * H)
+    sec = int(timeSec - 60*m - 60*60*H)
+
+    return H, m, sec
 
 class Application(tk.Frame):
     def __init__(self, master=None):
@@ -44,11 +53,16 @@ class Application(tk.Frame):
         PlayButton.pack(side='top', fill='x', expand=1)
         PauseButton = tk.Button(self.master, text='Pause', command=player.Pause, fg='wheat1', bg='black', font=("Consolas", 14))
         PauseButton.pack(side='top', fill='x', expand=1)
-
+        self.TimeLable = tk.Label(self.master, text = '00:00:00  /  00:00:00', fg=FG_COLOR, bg=BG_COLOR, font=("Consolas", 12))
+        self.TimeLable.pack(side='top', fill='x', expand=1)
         
         listener_thread = Listener(on_press=self.on_press, on_release=None)
         # This is a daemon=True thread, use .join() to prevent code from exiting  
         listener_thread.start()
+
+        timeUpdateThread = threading.Thread(target=self.updateTime)
+        timeUpdateThread.daemon = True
+        timeUpdateThread.start()
 
     def SelectFiles(self):
         # currently not used option to select a whole directory
@@ -72,6 +86,15 @@ class Application(tk.Frame):
         except AttributeError:
             pass # closing without player initialized 
         self.master.destroy()
+
+    def updateTime(self):
+        while (True):
+            currTime = self.bookPlayer.GetCurrentTime()
+            cH, cMin, cSec = Sec2HMinSec(currTime)
+            maxTime = self.bookPlayer.AudioLengthTime
+            maxH, maxMin, maxSec = Sec2HMinSec(maxTime)
+            self.TimeLable['text'] = '{:02d}:{:02d}:{:02d}  /  {:02d}:{:02d}:{:02d}'.format(cH, cMin, cSec, maxH, maxMin, maxSec)
+            time.sleep(1.0)
 
     def on_press(self, key):
         try:

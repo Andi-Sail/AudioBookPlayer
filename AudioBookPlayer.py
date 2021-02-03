@@ -1,4 +1,5 @@
 import pygame #used to create video games
+from mutagen.mp3 import MP3
 import os #it permits to interact with the operating system
 
 pygame.init()
@@ -21,6 +22,7 @@ class Player:
         self.currName, _ = os.path.splitext(self.currName)
         self._saveFile = os.path.join(self.currDirectory, self.currName + '.abp')
         self.startTime = 0.0
+        self.stepTimeOffset = 0.0
         self.isStarted = False
         self.isPlaying = False
 
@@ -28,6 +30,8 @@ class Player:
             self._loadSaveFile()
 
         pygame.mixer.music.load(self.currFile)
+        song = MP3(self.currFile)
+        self.AudioLengthTime = song.info.length
 
     def _loadSaveFile(self):
         with open(self._saveFile) as f:
@@ -66,15 +70,20 @@ class Player:
             self.Play()
 
     def GetCurrentTime(self):
-        return self.startTime + float(pygame.mixer.music.get_pos()) /1000 
+        return self.startTime + float(pygame.mixer.music.get_pos()) /1000 + self.stepTimeOffset
+
+    def GetAudioFullTime(self):
+        return pygame.mixer.music.get_l
 
     def StepBack(self):
         print("Player step back")
         currTime = self.GetCurrentTime()
         pygame.mixer.music.set_pos(currTime - STEP_SIZE if currTime > STEP_SIZE else 0.0)
+        self.stepTimeOffset -= STEP_SIZE
 
     def StepForward(self):
         print("Player step forward")
         currTime = self.GetCurrentTime()
         pygame.mixer.music.set_pos(currTime + STEP_SIZE)
+        self.stepTimeOffset += STEP_SIZE
 
