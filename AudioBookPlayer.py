@@ -4,6 +4,8 @@ import os #it permits to interact with the operating system
 pygame.init()
 pygame.mixer.init()
 
+START_MARGIN_S = 10.0
+
 class Player:
     
     __version__ = 'v1.0'
@@ -31,6 +33,7 @@ class Player:
             if version != self.__version__:
                 raise RuntimeError("Version of Save File not known")
             self.startTime = float(f.readline())
+            self.startTime = self.startTime - START_MARGIN_S if self.startTime > START_MARGIN_S else self.startTime
             print("Found Start Time: " + str(self.startTime))
 
     def _updateSaveFile(self, nextStartTime):
