@@ -9,6 +9,7 @@ import tkinter as tk #used to develop GUI
 import tkinter.filedialog as tkfile
 import fontawesome as fa
 import os #it permits to interact with the operating system
+from pynput.keyboard import Listener
 from AudioBookPlayer import Player
 
 BG_COLOR='gray12'
@@ -44,6 +45,11 @@ class Application(tk.Frame):
         PauseButton = tk.Button(self.master, text='Pause', command=player.Pause, fg='wheat1', bg='black', font=("Consolas", 14))
         PauseButton.pack(side='top', fill='x', expand=1)
 
+        
+        listener_thread = Listener(on_press=self.on_press, on_release=None)
+        # This is a daemon=True thread, use .join() to prevent code from exiting  
+        listener_thread.start()
+
     def SelectFiles(self):
         # currently not used option to select a whole directory
         # directory = tk.filedialog.askdirectory()
@@ -66,6 +72,20 @@ class Application(tk.Frame):
         except AttributeError:
             pass # closing without player initialized 
         self.master.destroy()
+
+    def on_press(self, key):
+        if str(key.value) == '<179>':
+            # play pause media key was pressed
+            self.bookPlayer.PausePlay()
+        if str(key.value) == '<176>':
+            # next key was pressed
+            self.bookPlayer.StepForward()
+        if str(key.value) == '<177>':
+            # previous key was pressed
+            self.bookPlayer.StepBack()
+
+    def on_release(self, key):
+        pass
 
 if __name__ == "__main__":
     root = tk.Tk()

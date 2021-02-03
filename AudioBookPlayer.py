@@ -5,6 +5,7 @@ pygame.init()
 pygame.mixer.init()
 
 START_MARGIN_S = 10.0
+STEP_SIZE = 10.0
 
 class Player:
     
@@ -21,6 +22,7 @@ class Player:
         self._saveFile = os.path.join(self.currDirectory, self.currName + '.abp')
         self.startTime = 0.0
         self.isStarted = False
+        self.isPlaying = False
 
         if os.path.exists(self._saveFile):
             self._loadSaveFile()
@@ -33,7 +35,7 @@ class Player:
             if version != self.__version__:
                 raise RuntimeError("Version of Save File not known")
             self.startTime = float(f.readline())
-            self.startTime = self.startTime - START_MARGIN_S if self.startTime > START_MARGIN_S else self.startTime
+            self.startTime = self.startTime - START_MARGIN_S if self.startTime > START_MARGIN_S else 0.0
             print("Found Start Time: " + str(self.startTime))
 
     def _updateSaveFile(self, nextStartTime):
@@ -48,9 +50,31 @@ class Player:
             self.isStarted = True
         else:
             pygame.mixer.music.unpause()
+        self.isPlaying = True
 
     def Pause(self):
         print("player pause")
         pygame.mixer.music.pause()
-        currTime = self.startTime + float(pygame.mixer.music.get_pos()) /1000 
+        currTime = self.GetCurrentTime()
         self._updateSaveFile(currTime)
+        self.isPlaying = False
+
+    def PausePlay(self):
+        if self.isPlaying:
+            self.Pause()
+        else:
+            self.Play()
+
+    def GetCurrentTime(self):
+        return self.startTime + float(pygame.mixer.music.get_pos()) /1000 
+
+    def StepBack(self):
+        print("Player step back")
+        currTime = self.GetCurrentTime()
+        pygame.mixer.music.set_pos(currTime - STEP_SIZE if currTime > STEP_SIZE else 0.0)
+
+    def StepForward(self):
+        print("Player step forward")
+        currTime = self.GetCurrentTime()
+        pygame.mixer.music.set_pos(currTime + STEP_SIZE)
+
