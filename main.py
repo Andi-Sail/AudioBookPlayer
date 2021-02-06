@@ -49,10 +49,12 @@ class Application(tk.Frame):
     def create_widgets(self, player):
         nameLabel = tk.Label(self.master, text = 'Playing: ' + player.currName, fg=FG_COLOR, bg=BG_COLOR, font=("Consolas", 14))
         nameLabel.pack(side='top', fill='x', expand=1)
-        PlayButton = tk.Button(self.master, text='Play', command=player.Play, fg='wheat1', bg='black', font=("Consolas", 14))
+        PlayButton = tk.Button(self.master, text='Play', command=player.Play, fg='wheat1', bg='black', font=("Consolas", 10))
         PlayButton.pack(side='top', fill='x', expand=1)
-        PauseButton = tk.Button(self.master, text='Pause', command=player.Pause, fg='wheat1', bg='black', font=("Consolas", 14))
+        PauseButton = tk.Button(self.master, text='Pause', command=player.Pause, fg='wheat1', bg='black', font=("Consolas", 10))
         PauseButton.pack(side='top', fill='x', expand=1)
+        PausePlayButton = tk.Button(self.master, text='Pause / Play', command=player.PausePlay, fg='wheat1', bg='black', font=("Consolas", 16))
+        PausePlayButton.pack(side='top', fill='x', expand=1)
         self.TimeLable = tk.Label(self.master, text = '00:00:00  /  00:00:00', fg=FG_COLOR, bg=BG_COLOR, font=("Consolas", 12))
         self.TimeLable.pack(side='top', fill='x', expand=1)
         
