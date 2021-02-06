@@ -89,6 +89,17 @@ class Application(tk.Frame):
             pass # closing without player initialized 
         self.master.destroy()
 
+    def root_on_press(self, event):
+        keyChar = None
+        try:
+            keyChar = event.char
+        except AttributeError:
+            keyChar = str(event)
+
+        if keyChar == ' ':
+            self.bookPlayer.PausePlay()
+
+
     def updateTime(self):
         while (True):
             currTime = self.bookPlayer.GetCurrentTime()
@@ -120,4 +131,5 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = Application(master=root)
     root.protocol("WM_DELETE_WINDOW", app.Close)
+    root.bind('<KeyPress>', app.root_on_press)
     app.mainloop()
