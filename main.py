@@ -4,6 +4,7 @@ Designed to make playing audiobooks as comfortable as possible
 Player features inspired from: https://towardsdatascience.com/how-to-build-an-mp3-music-player-with-python-619e0c0dcee2
 """
 
+from tkinter.constants import CENTER, LEFT, RIGHT
 import pygame #used to create video games
 import tkinter as tk #used to develop GUI
 import tkinter.filedialog as tkfile
@@ -48,12 +49,14 @@ class Application(tk.Frame):
     def create_widgets(self, player):
         nameLabel = tk.Label(self.master, text = 'Playing: ' + player.currName, fg=FG_COLOR, bg=BG_COLOR, font=("Consolas", 14))
         nameLabel.pack(side='top', fill='x', expand=1)
-        PlayButton = tk.Button(self.master, text='Play', command=player.Play, fg='wheat1', bg='black', font=("Consolas", 10))
-        PlayButton.pack(side='top', fill='x', expand=1)
-        PauseButton = tk.Button(self.master, text='Pause', command=player.Pause, fg='wheat1', bg='black', font=("Consolas", 10))
-        PauseButton.pack(side='top', fill='x', expand=1)
         PausePlayButton = tk.Button(self.master, text='Pause / Play', command=player.PausePlay, fg='wheat1', bg='black', font=("Consolas", 16))
-        PausePlayButton.pack(side='top', fill='x', expand=1)
+        PausePlayButton.pack(side='top', fill='x', expand=1, padx=5)
+        stepFrame = tk.Frame(self.master,  bg=BG_COLOR)
+        StepForwardButton = tk.Button(stepFrame, text='>>', command=self.bookPlayer.StepForward,  fg='wheat1', bg='black', font=("Consolas", 16))
+        StepForwardButton.pack(side=RIGHT, padx=5)
+        StepBackdButton = tk.Button(stepFrame, text='<<', command=self.bookPlayer.StepBack,  fg='wheat1', bg='black', font=("Consolas", 16))
+        StepBackdButton.pack(side=LEFT, padx=5)
+        stepFrame.pack(side='top', fill='x', expand=1)
         self.TimeLable = tk.Label(self.master, text = '00:00:00  /  00:00:00', fg=FG_COLOR, bg=BG_COLOR, font=("Consolas", 12))
         self.TimeLable.pack(side='top', fill='x', expand=1)
         
