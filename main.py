@@ -89,14 +89,18 @@ class Application(tk.Frame):
         self.master.destroy()
 
     def root_on_press(self, event):
-        keyChar = None
+        keySym = None
         try:
-            keyChar = event.char
+            keySym = event.keysym
         except AttributeError:
-            keyChar = str(event)
+            keySym = str(event)
 
-        if keyChar == ' ':
+        if keySym == 'space':
             self.bookPlayer.PausePlay()
+        elif keySym == 'Left':
+            self.bookPlayer.StepBack()
+        elif keySym == 'Right':
+            self.bookPlayer.StepForward()
 
 
     def updateTime(self):
