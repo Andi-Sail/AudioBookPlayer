@@ -7,7 +7,6 @@ Player features inspired from: https://towardsdatascience.com/how-to-build-an-mp
 import pygame #used to create video games
 import tkinter as tk #used to develop GUI
 import tkinter.filedialog as tkfile
-import fontawesome as fa
 import os #it permits to interact with the operating system
 from pynput.keyboard import Listener
 from AudioBookPlayer import Player
