@@ -5,7 +5,6 @@ Player features inspired from: https://towardsdatascience.com/how-to-build-an-mp
 """
 
 from tkinter.constants import CENTER, LEFT, RIGHT
-import pygame #used to create video games
 import tkinter as tk #used to develop GUI
 import tkinter.filedialog as tkfile
 import os #it permits to interact with the operating system

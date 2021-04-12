@@ -1,11 +1,10 @@
-import pygame #used to create video games
 from mutagen.mp3 import MP3
 import os #it permits to interact with the operating system
 
-pygame.init()
-pygame.mixer.init()
+from pyglet.gl import *
+import pyglet
 
-START_MARGIN_S = 10.0
+START_MARGIN_S = 30.0
 STEP_SIZE = 10.0
 
 class Player:
@@ -29,7 +28,11 @@ class Player:
         if os.path.exists(self._saveFile):
             self._loadSaveFile()
 
-        pygame.mixer.music.load(self.currFile)
+        self.pygletPlayer = pyglet.media.Player()
+        self.pygletsource = pyglet.media.load(self.currFile)
+        self.pygletPlayer.queue(self.pygletsource)
+        self.pygletPlayer.seek(self.startTime)
+
         song = MP3(self.currFile)
         self.AudioLengthTime = song.info.length
 
@@ -49,16 +52,13 @@ class Player:
 
     def Play(self):
         print("player play")
-        if (not self.isStarted):
-            pygame.mixer.music.play(start=self.startTime)
-            self.isStarted = True
-        else:
-            pygame.mixer.music.unpause()
+        self.pygletPlayer.play()
+        self.isStarted = True
         self.isPlaying = True
 
     def Pause(self):
         print("player pause")
-        pygame.mixer.music.pause()
+        self.pygletPlayer.pause()
         currTime = self.GetCurrentTime()
         self._updateSaveFile(currTime)
         self.isPlaying = False
@@ -70,20 +70,15 @@ class Player:
             self.Play()
 
     def GetCurrentTime(self):
-        return self.startTime + float(pygame.mixer.music.get_pos()) /1000 + self.stepTimeOffset
-
-    def GetAudioFullTime(self):
-        return pygame.mixer.music.get_l
+        return self.pygletPlayer.time
 
     def StepBack(self):
         print("Player step back")
         currTime = self.GetCurrentTime()
-        pygame.mixer.music.set_pos(currTime - STEP_SIZE if currTime > STEP_SIZE else 0.0)
-        self.stepTimeOffset -= STEP_SIZE
+        self.pygletPlayer.seek(currTime - STEP_SIZE if currTime > STEP_SIZE else 0.0)
 
     def StepForward(self):
         print("Player step forward")
         currTime = self.GetCurrentTime()
-        pygame.mixer.music.set_pos(currTime + STEP_SIZE)
-        self.stepTimeOffset += STEP_SIZE
+        self.pygletPlayer.seek(currTime + STEP_SIZE)
 
