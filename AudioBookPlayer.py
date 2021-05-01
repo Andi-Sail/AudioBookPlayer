@@ -1,3 +1,4 @@
+import time
 from mutagen.mp3 import MP3
 import os #it permits to interact with the operating system
 
@@ -72,13 +73,23 @@ class Player:
     def GetCurrentTime(self):
         return self.pygletPlayer.time
 
+    def _seek(self, t):
+        if self.isPlaying:
+            self.pygletPlayer.pause()
+            time.sleep(.1) # pause and sleep before and after is somehow necessary, otherwise thers is no sound after seek
+        
+        self.pygletPlayer.seek(t)
+
+        if self.isPlaying:
+            time.sleep(.1)
+            self.pygletPlayer.play()
+
     def StepBack(self):
         print("Player step back")
         currTime = self.GetCurrentTime()
-        self.pygletPlayer.seek(currTime - STEP_SIZE if currTime > STEP_SIZE else 0.0)
+        self._seek(currTime - STEP_SIZE if currTime > STEP_SIZE else 0.0)                
 
     def StepForward(self):
         print("Player step forward")
         currTime = self.GetCurrentTime()
-        self.pygletPlayer.seek(currTime + STEP_SIZE)
-
+        self._seek(currTime + STEP_SIZE)        
