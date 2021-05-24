@@ -5,6 +5,8 @@ import os #it permits to interact with the operating system
 from pyglet.gl import *
 import pyglet
 
+import WebRemote.AudioBookPlayerRemote as remote
+
 START_MARGIN_S = 30.0
 STEP_SIZE = 10.0
 
@@ -36,6 +38,8 @@ class Player:
 
         song = MP3(self.currFile)
         self.AudioLengthTime = song.info.length
+
+        remote.start(self)
 
     def _loadSaveFile(self):
         with open(self._saveFile) as f:
